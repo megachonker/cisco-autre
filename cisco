@@ -1,0 +1,310 @@
+#########
+###CE1###
+#########
+
+enable
+!
+conf t
+!
+host CE1
+no ip domain-lookup
+ip cef
+!
+interface Ethernet0/0
+ ip address 192.168.1.2 255.255.255.0
+ no shutdown
+!
+exit
+ip route 0.0.0.0 0.0.0.0  192.168.1.1
+
+#########
+###CE2###
+#########
+
+enable
+!
+conf t
+!
+host CE2
+no ip domain-lookup
+ip cef
+!
+interface Ethernet0/0
+ ip address 192.168.2.2 255.255.255.0
+ no shutdown
+!
+exit
+ip route 0.0.0.0 0.0.0.0  192.168.2.1
+
+#######
+##PE1##
+#######
+
+
+enable
+!
+conf t
+!
+host PE1
+no ip domain-lookup
+ip cefmpls traffic-eng tunnels
+!
+ip route 192.168.2.0 255.255.255.0 tunnel 0
+!
+ip explicit-path name LSP
+ next-address 202.0.0.2
+ next-address 203.0.0.2
+ next-address 204.0.0.1
+!
+interface Tunnel0
+ ip unnumbered Loopback0
+ tunnel destination 22.22.22.22
+ tunnel mode mpls traffic-eng
+ tunnel mpls traffic-eng autoroute announce
+ tunnel mpls traffic-eng priority 1 1
+ tunnel mpls traffic-eng bandwidth 900
+ tunnel mpls traffic-eng path-option 1 dynamic
+ tunnel mpls traffic-eng path-option 2 explicit name LSP
+!
+interface Loopback0
+ ip address 11.11.11.11 255.255.255.255
+ ip ospf 1 area 0
+ no shutdown
+!
+interface Ethernet1/0
+ ip address 192.168.1.1 255.255.255.0
+ ip ospf 1 area 0
+ no shutdown
+!
+interface Ethernet0/0
+ ip address 200.0.0.1 255.255.255.0
+ ip ospf 1 area 0
+ mpls ip
+ mpls traffic-eng tunnels
+ ip rsvp bandwidth 7000
+ no shutdown
+!
+interface Ethernet0/1
+ ip address 202.0.0.1 255.255.255.0
+ ip ospf 1 area 0
+ mpls ip
+ mpls traffic-eng tunnels
+ ip rsvp bandwidth 7000
+ no shutdown
+!
+router ospf 1
+ router-id 11.11.11.11
+ network 11.11.11.11 0.0.0.0 area 0
+ network 200.0.0.0 0.0.0.255 area 0
+ network 202.0.0.0 0.0.0.255 area 0
+ mpls traffic-eng router-id lo0
+ mpls traffic-eng area 0
+ mpls ldp autoconf area 0
+ passive-interface Ethernet0/1
+!
+exit
+exit
+
+
+#######
+##PE2##
+#######
+
+
+enable
+!
+conf t
+!
+host PE2
+no ip domain-lookup
+ip cefmpls traffic-eng tunnels
+!
+!
+interface Loopback0
+ ip address 22.22.22.22 255.255.255.255
+ ip ospf 1 area 0
+ no shutdown
+!
+interface Ethernet0/0
+ ip address 192.168.2.1 255.255.255.0
+ ip ospf 1 area 0
+ no shutdown
+ 
+interface Ethernet0/1
+ ip address 201.0.0.1 255.255.255.0
+ ip ospf 1 area 0
+ mpls ip
+ mpls traffic-eng tunnels
+ ip rsvp bandwidth 7000
+ no shutdown
+!
+interface Ethernet1/0
+ ip address 204.0.0.1 255.255.255.0
+ ip ospf 1 area 0
+ mpls ip
+ mpls traffic-eng tunnels
+ ip rsvp bandwidth 7000
+ no shutdown
+!
+router ospf 1
+ router-id 22.22.22.22
+ network 22.22.22.22 0.0.0.0 area 0
+ network 201.0.0.0 0.0.0.255 area 0
+ network 204.0.0.0 0.0.0.255 area 0
+ mpls traffic-eng router-id lo0
+ mpls traffic-eng area 0
+ passive-interface Ethernet0/0
+!
+exit
+!
+exit
+
+
+####
+#P1#
+####
+
+
+enable
+!
+conf t
+!
+host P1
+no ip domain-lookup
+ip cefmpls traffic-eng tunnels
+!
+!
+!
+interface Loopback0
+ ip address 1.1.1.1 255.255.255.255
+ ip ospf 1 area 0
+ no shutdown
+!
+interface Ethernet0/0
+ ip address 200.0.0.2 255.255.255.0
+ ip ospf 1 area 0
+ mpls ip
+ mpls traffic-eng tunnels
+ ip rsvp bandwidth 7000
+ no shutdown
+!
+interface Ethernet0/1
+ ip address 201.0.0.2 255.255.255.0
+ ip ospf 1 area 0
+ mpls ip
+ mpls traffic-eng tunnels
+ ip rsvp bandwidth 7000
+ no shutdown
+!
+router ospf 1
+ router-id 1.1.1.1
+ network 1.1.1.1 0.0.0.0 area 0
+ network 200.0.0.0 0.0.0.255 area 0
+ network 201.0.0.0 0.0.0.255 area 0
+ mpls traffic-eng router-id lo0
+ mpls traffic-eng area 0
+!
+exit
+!
+exit
+
+
+####
+#P2#
+####
+
+
+enable
+!
+conf t
+!
+no ip domain-lookup
+ip cefmpls traffic-eng tunnels
+!
+!
+!
+interface Loopback0
+ ip address 2.2.2.2 255.255.255.255
+ ip ospf 1 area 0
+ no shutdown
+!
+interface Ethernet0/0
+ ip address 203.0.0.1 255.255.255.0
+ ip ospf 1 area 0
+ mpls ip
+ mpls traffic-eng tunnels
+ ip rsvp bandwidth 7000
+ no shutdown
+!
+interface Ethernet0/1
+ ip address 202.0.0.2 255.255.255.0
+ ip ospf 1 area 0
+ mpls ip
+ mpls traffic-eng tunnels
+ ip rsvp bandwidth 7000
+ no shutdown
+!
+router ospf 1
+ router-id 2.2.2.2
+ network 2.2.2.2 0.0.0.0 area 0
+ network 203.0.0.0 0.0.0.255 area 0
+ network 202.0.0.0 0.0.0.255 area 0
+ mpls traffic-eng router-id lo0
+ mpls traffic-eng area 0
+exit
+!
+exit
+
+####
+#P3#
+####
+
+
+enable
+!
+conf t
+!
+no ip domain-lookup
+ip cefmpls traffic-eng tunnels
+!
+!
+!
+interface Loopback0
+ ip address 3.3.3.3 255.255.255.255
+ ip ospf 1 area 0
+ no shutdown
+!
+
+interface Ethernet0/0
+ ip address 203.0.0.2 255.255.255.0
+ ip ospf 1 area 0
+ mpls ip
+ mpls traffic-eng tunnels
+ ip rsvp bandwidth 7000
+ no shutdown
+!
+interface Ethernet0/1
+ ip address 204.0.0.2 255.255.255.0
+ ip ospf 1 area 0
+ mpls ip
+ mpls traffic-eng tunnels
+ ip rsvp bandwidth 7000
+ no shutdown
+!
+router ospf 1
+ router-id 3.3.3.3
+ network 3.3.3.3 0.0.0.0 area 0
+ network 203.0.0.0 0.0.0.255 area 0
+ network 204.0.0.0 0.0.0.255 area 0
+ mpls traffic-eng router-id lo0
+ mpls traffic-eng area 0
+!
+exit
+!
+exit
+
+
+
+
+
+
