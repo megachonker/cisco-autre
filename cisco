@@ -1,7 +1,12 @@
 #########
 ###CE1###
 #########
-
+#########
+###CE1###
+#########
+#########
+###CE1###
+#########
 enable
 !
 conf t
@@ -47,7 +52,8 @@ conf t
 !
 host PE1
 no ip domain-lookup
-ip cefmpls traffic-eng tunnels
+ip cef
+mpls traffic-eng tunnels
 !
 ip route 192.168.2.0 255.255.255.0 tunnel 0
 !
@@ -117,7 +123,8 @@ conf t
 !
 host PE2
 no ip domain-lookup
-ip cefmpls traffic-eng tunnels
+ip cef
+mpls traffic-eng tunnels
 !
 !
 interface Loopback0
@@ -171,7 +178,8 @@ conf t
 !
 host P1
 no ip domain-lookup
-ip cefmpls traffic-eng tunnels
+ip cef
+mpls traffic-eng tunnels
 !
 !
 !
@@ -219,7 +227,8 @@ enable
 conf t
 !
 no ip domain-lookup
-ip cefmpls traffic-eng tunnels
+ip cef
+mpls traffic-eng tunnels
 !
 !
 !
@@ -265,7 +274,8 @@ enable
 conf t
 !
 no ip domain-lookup
-ip cefmpls traffic-eng tunnels
+ip cef
+mpls traffic-eng tunnels
 !
 !
 !
